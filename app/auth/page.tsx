@@ -1,15 +1,24 @@
 "use client";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/auth-context";
 import { createClient } from "@/lib/supabase/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Authpage() {
-  const [isSignUp, setIsSignUp] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [isSignUp, setIsSignUp] = useState<boolean>(false)
+  const [email, setEmail] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
+  const [loading, setLoading] = useState<boolean>(false)
+  const [error, setError] = useState<string>("")
   const supabase = createClient()
+  const { user, loading: authLoading } = useAuth()
+  const router = useRouter()
 
+  useEffect(() => {
+    if (user && !authLoading) {
+      router.push("/")
+    }
+  }, [user, authLoading, router])
 
   async function handleAuth(e: React.FormEvent) {
     e.preventDefault();
